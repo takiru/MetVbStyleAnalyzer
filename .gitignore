@@ -1,2 +1,3 @@
-/src/VbNamespaceAnalyzer/bin
-/src/VbNamespaceAnalyzer/obj
+bin
+obj
+.vs

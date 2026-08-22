@@ -1,0 +1,14 @@
+﻿<Project>
+  <!-- 特定のプロジェクトだけ除外するとき -->
+  <!--<ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vbproj' AND '$(MSBuildProjectName)' != 'ClassLibrary3'">
+    <PackageReference Include="VbNamespaceAnalyzer" Version="1.0.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <CompilerVisibleProperty Include="RootNamespace" />
+    <CompilerVisibleProperty Include="ProjectDir" />
+  </ItemGroup>-->
+
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vbproj'">
+    <PackageReference Include="VbNamespaceAnalyzer" Version="1.0.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <CompilerVisibleProperty Include="RootNamespace" />
+    <CompilerVisibleProperty Include="ProjectDir" />
+  </ItemGroup>
+</Project>
