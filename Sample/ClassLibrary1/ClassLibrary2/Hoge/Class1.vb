@@ -1,9 +1,7 @@
 Imports System.IO
 
 Namespace Hoge
-    ''' <summary>
-    ''' aaa
-    ''' </summary>
+
     Public Class Class1
         ''' <summary>
         ''' aaa
