@@ -3,6 +3,8 @@
   <PropertyGroup>
     <RootNamespace>ClassLibrary2</RootNamespace>
     <TargetFramework>net481</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>

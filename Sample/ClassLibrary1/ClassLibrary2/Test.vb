@@ -1,8 +1,8 @@
-Namespace Global.ClassLibrary3
+﻿Namespace Global.ClassLibrary2
     ''' <summary>
     ''' aaa
     ''' </summary>
-    Public Class Class1
+    Public Class Test
 
     End Class
 End Namespace

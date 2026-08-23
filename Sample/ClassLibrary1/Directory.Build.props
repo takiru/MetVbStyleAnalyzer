@@ -11,4 +11,10 @@
     <CompilerVisibleProperty Include="RootNamespace" />
     <CompilerVisibleProperty Include="ProjectDir" />
   </ItemGroup>
+
+  <!-- ドキュメントコメントの制約を検証するには、必ずドキュメントファイルをコンパイラで生成する必要がある -->
+  <!-- これを行わないと、コードを書いているときは問題ないが、ビルドエラーが起こる -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.vbproj'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 </Project>
