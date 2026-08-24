@@ -104,8 +104,14 @@ namespace VbStyleAnalyzer
 
         private static bool IsTopLevelTargetNode(SyntaxNode node)
         {
-            if (node is not (ClassBlockSyntax or StructureBlockSyntax or InterfaceBlockSyntax
-                or ModuleBlockSyntax or EnumBlockSyntax or DelegateStatementSyntax))
+            var isTargetKind = node is ClassBlockSyntax
+                || node is StructureBlockSyntax
+                || node is InterfaceBlockSyntax
+                || node is ModuleBlockSyntax
+                || node is EnumBlockSyntax
+                || node is DelegateStatementSyntax;
+
+            if (!isTargetKind)
             {
                 return false;
             }

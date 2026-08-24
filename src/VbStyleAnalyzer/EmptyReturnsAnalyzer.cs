@@ -56,7 +56,7 @@ namespace VbStyleAnalyzer
             }
 
             var returns = DocCommentUtilities.GetElement(doc, "returns");
-            if (returns is not null && !DocCommentUtilities.IsElementContentEmpty(returns))
+            if (returns != null && !DocCommentUtilities.IsElementContentEmpty(returns))
             {
                 return;
             }

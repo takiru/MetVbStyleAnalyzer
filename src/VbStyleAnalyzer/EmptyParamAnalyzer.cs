@@ -73,7 +73,7 @@ namespace VbStyleAnalyzer
 
                 var declaredName = DocCommentUtilities.GetNameAttributeValue(paramElement);
 
-                if (declaredName is not null && excludedNames.Contains(declaredName))
+                if (declaredName != null && excludedNames.Contains(declaredName))
                 {
                     // 除外リストに含まれる引数名は、内容が空でも対象外にする
                     continue;

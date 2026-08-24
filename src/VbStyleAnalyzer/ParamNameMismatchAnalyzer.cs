@@ -76,7 +76,7 @@ namespace VbStyleAnalyzer
             {
                 var declaredName = DocCommentUtilities.GetNameAttributeValue(paramElement);
 
-                var matches = declaredName is not null
+                var matches = declaredName != null
                     && actualNames.Any(n => string.Equals(n, declaredName, StringComparison.OrdinalIgnoreCase));
 
                 if (!matches)
@@ -93,8 +93,7 @@ namespace VbStyleAnalyzer
             // 2. 仮引数の中に、対応する <param> が1つも記載されていないものがある場合
             var declaredNames = paramElements
                 .Select(DocCommentUtilities.GetNameAttributeValue)
-                .Where(n => n is not null)
-                .Select(n => n!)
+                .Where(n => n != null)
                 .ToArray();
 
             foreach (var parameter in parameters)

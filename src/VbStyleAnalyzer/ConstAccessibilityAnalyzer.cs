@@ -43,18 +43,21 @@ namespace VbStyleAnalyzer
 
         private static void AnalyzeField(SymbolAnalysisContext context)
         {
-            if (context.Symbol is not IFieldSymbol field || !field.IsConst)
+            var field = context.Symbol as IFieldSymbol;
+            if (field == null || !field.IsConst)
             {
                 return;
             }
 
             // Enum のメンバーは Const 扱いになるが、Const キーワードを明示的に書くものではないため対象外
-            if (field.ContainingType?.TypeKind == TypeKind.Enum)
+            if (field.ContainingType != null && field.ContainingType.TypeKind == TypeKind.Enum)
             {
                 return;
             }
 
-            if (field.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal))
+            if (field.DeclaredAccessibility != Accessibility.Public &&
+                field.DeclaredAccessibility != Accessibility.Protected &&
+                field.DeclaredAccessibility != Accessibility.ProtectedOrInternal)
             {
                 return;
             }

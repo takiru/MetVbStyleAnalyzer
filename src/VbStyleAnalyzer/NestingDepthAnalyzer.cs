@@ -57,7 +57,7 @@ namespace VbStyleAnalyzer
             var depth = 1;
             var current = node.Parent;
 
-            while (current is not null)
+            while (current != null)
             {
                 var stop = false;
 
@@ -102,13 +102,27 @@ namespace VbStyleAnalyzer
                 return;
             }
 
-            var location = node switch
+            Location location;
+            var multiLineIf = node as MultiLineIfBlockSyntax;
+            if (multiLineIf != null)
             {
-                MultiLineIfBlockSyntax multiLineIf => multiLineIf.IfStatement.GetLocation(),
-                SingleLineIfStatementSyntax singleLineIf => singleLineIf.IfKeyword.GetLocation(),
-                SelectBlockSyntax selectBlock => selectBlock.SelectStatement.GetLocation(),
-                _ => node.GetLocation()
-            };
+                location = multiLineIf.IfStatement.GetLocation();
+            }
+            else
+            {
+                var singleLineIf = node as SingleLineIfStatementSyntax;
+                if (singleLineIf != null)
+                {
+                    location = singleLineIf.IfKeyword.GetLocation();
+                }
+                else
+                {
+                    var selectBlock = node as SelectBlockSyntax;
+                    location = selectBlock != null
+                        ? selectBlock.SelectStatement.GetLocation()
+                        : node.GetLocation();
+                }
+            }
 
             var diagnostic = Diagnostic.Create(Rule, location, depth, maxAllowedDepth);
             context.ReportDiagnostic(diagnostic);

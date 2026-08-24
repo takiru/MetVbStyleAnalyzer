@@ -59,7 +59,7 @@ namespace VbStyleAnalyzer
                 return;
             }
 
-            if (symbol is not IMethodSymbol && symbol is not IFieldSymbol)
+            if (!(symbol is IMethodSymbol) && !(symbol is IFieldSymbol))
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace VbStyleAnalyzer
 
             // 参照元が、そのメンバーを宣言している Module 自身の内部である場合は許可する
             var usageContainingType = context.ContainingSymbol?.ContainingType;
-            if (usageContainingType is not null && SymbolEqualityComparer.Default.Equals(usageContainingType, containingType))
+            if (usageContainingType != null && SymbolEqualityComparer.Default.Equals(usageContainingType, containingType))
             {
                 return;
             }

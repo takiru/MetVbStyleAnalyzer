@@ -43,7 +43,7 @@ namespace VbStyleAnalyzer
         {
             var node = context.Node;
 
-            if (DocCommentUtilities.GetDocumentationComment(node) is not null)
+            if (DocCommentUtilities.GetDocumentationComment(node) != null)
             {
                 return;
             }

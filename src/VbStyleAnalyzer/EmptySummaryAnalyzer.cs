@@ -52,7 +52,7 @@ namespace VbStyleAnalyzer
             }
 
             var summary = DocCommentUtilities.GetElement(doc, "summary");
-            if (summary is not null && !DocCommentUtilities.IsElementContentEmpty(summary))
+            if (summary != null && !DocCommentUtilities.IsElementContentEmpty(summary))
             {
                 return;
             }

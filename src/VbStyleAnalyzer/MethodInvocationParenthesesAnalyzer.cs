@@ -75,7 +75,8 @@ namespace VbStyleAnalyzer
             }
 
             var symbolInfo = context.SemanticModel.GetSymbolInfo(node, context.CancellationToken);
-            if (symbolInfo.Symbol is not IMethodSymbol methodSymbol || methodSymbol.MethodKind != MethodKind.Ordinary)
+            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
+            if (methodSymbol == null || methodSymbol.MethodKind != MethodKind.Ordinary)
             {
                 return;
             }

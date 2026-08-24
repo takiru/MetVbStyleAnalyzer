@@ -130,14 +130,21 @@ namespace VbStyleAnalyzer
         /// </summary>
         public static ImmutableArray<ParameterSyntax> GetParameters(SyntaxNode node)
         {
-            return node switch
+            var methodStatement = node as MethodStatementSyntax;
+            if (methodStatement != null)
             {
-                MethodStatementSyntax m => m.ParameterList?.Parameters.ToImmutableArray()
-                                            ?? ImmutableArray<ParameterSyntax>.Empty,
-                PropertyStatementSyntax p => p.ParameterList?.Parameters.ToImmutableArray()
-                                              ?? ImmutableArray<ParameterSyntax>.Empty,
-                _ => ImmutableArray<ParameterSyntax>.Empty
-            };
+                return methodStatement.ParameterList?.Parameters.ToImmutableArray()
+                       ?? ImmutableArray<ParameterSyntax>.Empty;
+            }
+
+            var propertyStatement = node as PropertyStatementSyntax;
+            if (propertyStatement != null)
+            {
+                return propertyStatement.ParameterList?.Parameters.ToImmutableArray()
+                       ?? ImmutableArray<ParameterSyntax>.Empty;
+            }
+
+            return ImmutableArray<ParameterSyntax>.Empty;
         }
 
         /// <summary>
@@ -146,12 +153,18 @@ namespace VbStyleAnalyzer
         /// </summary>
         public static bool HasReturnValue(SyntaxNode node)
         {
-            return node switch
+            var methodStatement = node as MethodStatementSyntax;
+            if (methodStatement != null)
             {
-                MethodStatementSyntax m => m.Kind() == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FunctionStatement,
-                PropertyStatementSyntax => true,
-                _ => false
-            };
+                return methodStatement.Kind() == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.FunctionStatement;
+            }
+
+            if (node is PropertyStatementSyntax)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -159,13 +172,25 @@ namespace VbStyleAnalyzer
         /// </summary>
         public static (string Name, Location Location) GetMemberNameAndLocation(SyntaxNode node)
         {
-            return node switch
+            var classStatement = node as ClassStatementSyntax;
+            if (classStatement != null)
             {
-                ClassStatementSyntax c => (c.Identifier.Text, c.Identifier.GetLocation()),
-                MethodStatementSyntax m => (m.Identifier.Text, m.Identifier.GetLocation()),
-                PropertyStatementSyntax p => (p.Identifier.Text, p.Identifier.GetLocation()),
-                _ => (node.ToString(), node.GetLocation())
-            };
+                return (classStatement.Identifier.Text, classStatement.Identifier.GetLocation());
+            }
+
+            var methodStatement = node as MethodStatementSyntax;
+            if (methodStatement != null)
+            {
+                return (methodStatement.Identifier.Text, methodStatement.Identifier.GetLocation());
+            }
+
+            var propertyStatement = node as PropertyStatementSyntax;
+            if (propertyStatement != null)
+            {
+                return (propertyStatement.Identifier.Text, propertyStatement.Identifier.GetLocation());
+            }
+
+            return (node.ToString(), node.GetLocation());
         }
     }
 }
