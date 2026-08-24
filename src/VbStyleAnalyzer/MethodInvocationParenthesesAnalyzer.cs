@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET では引数なしのメソッド呼び出しで括弧を省略できてしまうため、
@@ -15,11 +15,11 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class MethodInvocationParenthesesAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0003";
+        public const string DiagnosticId = "MSA1100";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
-            title: "メソッド呼び出しに括弧がありません",
+            title: "メソッドがプロパティのようにアクセスされています",
             messageFormat: "メソッド '{0}' がプロパティのように括弧なしで参照されています。呼び出すには '{0}()' のように括弧を付けてください",
             category: "Style",
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -27,7 +27,7 @@ namespace VbNamespaceAnalyzer
             description: "VB.NET は引数なしのメソッド呼び出しで括弧を省略できてしまうため、" +
                          "誤ってメソッドをプロパティのように扱っていても気づきにくくなります。" +
                          "AddressOf によるデリゲート参照や NameOf は対象外です。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0003.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1100.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);

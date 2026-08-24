@@ -5,19 +5,19 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// ドキュメントコメントの &lt;param name="..."&gt; が、実際の仮引数の名前と一致しているかを検証するアナライザー。
     /// 以下の両方向のズレを検出する。
     ///   ・記載されている &lt;param&gt; の name が、どの仮引数の名前とも一致しない
     ///   ・仮引数の中に、対応する &lt;param&gt; が1つも記載されていないものがある
-    /// &lt;param&gt; が1つも無いケースは VBNS0007 (MissingParamAnalyzer) の担当なので、ここでは扱わない。
+    /// &lt;param&gt; が1つも無いケースは MSA1104 (MissingParamAnalyzer) の担当なので、ここでは扱わない。
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class ParamNameMismatchAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0008";
+        public const string DiagnosticId = "MSA1105";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -27,7 +27,7 @@ namespace VbNamespaceAnalyzer
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "ドキュメントコメントの <param name=\"...\"> は、実際の仮引数の名前と一致している必要があります。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0008.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1105.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);
@@ -56,14 +56,14 @@ namespace VbNamespaceAnalyzer
             var doc = DocCommentUtilities.GetDocumentationComment(node);
             if (doc is null)
             {
-                // ドキュメントコメント自体が無いケースは別のアナライザー (VBNS0005) の担当
+                // ドキュメントコメント自体が無いケースは別のアナライザー (MSA1102) の担当
                 return;
             }
 
             var paramElements = DocCommentUtilities.GetElements(doc, "param");
             if (paramElements.IsEmpty)
             {
-                // <param> が1つも無いケースは別のアナライザー (VBNS0007) の担当
+                // <param> が1つも無いケースは別のアナライザー (MSA1104) の担当
                 return;
             }
 

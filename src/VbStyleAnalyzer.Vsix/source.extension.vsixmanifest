@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="VSIXProject1.48c64747-dbcd-4232-8500-d5fe6571f281" Version="1.0" Language="ja-JP" Publisher="takiru" />
-        <DisplayName>VbNamespaceAnalyzer ルール設定</DisplayName>
-        <Description xml:space="preserve">VbNamespaceAnalyzer (VBNS0001-VBNS0011) の各診断ルールの重要度 (none/warning/error) を、Tools &gt; Options から設定できるようにします。.editorconfig への反映と、VS全体 (グローバル) 設定への反映のどちらかを選択できます。</Description>
+        <Identity Id="VbStyleAnalyzer.48c64747-dbcd-4232-8500-d5fe6571f281" Version="1.0" Language="ja-JP" Publisher="takiru" />
+        <DisplayName>VbStyleAnalyzer ルール設定</DisplayName>
+        <Description xml:space="preserve">VbStyleAnalyzer (MSA1000-MSA1110) の各診断ルールの重要度 (none/warning/error) を、Tools &gt; Options から設定できるようにします。.editorconfig への反映と、VS全体 (グローバル) 設定への反映のどちらかを選択できます。</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

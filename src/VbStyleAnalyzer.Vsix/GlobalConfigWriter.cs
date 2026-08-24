@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using VSIXProject1;
 
-namespace VSIXProject1
+namespace VbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// VB.NET プロジェクトが .editorconfig で severity 等を指定していない場合に適用される、

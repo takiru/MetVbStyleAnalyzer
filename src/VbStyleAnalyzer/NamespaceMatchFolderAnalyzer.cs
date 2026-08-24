@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET のファイルに記述された Namespace が、
@@ -18,7 +18,7 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class NamespaceMatchFolderAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0001";
+        public const string DiagnosticId = "MSA1000";
 
         // VB プロジェクト特有の、コードとして扱うべきでない既定フォルダー
         private static readonly string[] ExcludedFolders = { "My Project", "obj", "bin" };
@@ -33,10 +33,10 @@ namespace VbNamespaceAnalyzer
             description: "VB.NET のファイルの名前空間が、プロジェクトの RootNamespace とフォルダー階層から導かれる名前空間と一致するかを検証します。" +
                          "VB.NET は Namespace ステートメントに RootNamespace を自動的に前置するため、" +
                          "通常はフォルダー名だけを書く (Namespace Hoge) か、Global キーワードで明示的にバイパスする (Namespace Global.Root.Hoge) 必要があります。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0001.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1000.severity を設定してください。");
 
         private static readonly DiagnosticDescriptor MissingNamespaceRule = new DiagnosticDescriptor(
-            "VBNS0002",
+            "MSA1001",
             title: "名前空間が指定されていません",
             messageFormat: "型 '{0}' に Namespace が指定されていません。{1}",
             category: "Naming",
@@ -44,7 +44,7 @@ namespace VbNamespaceAnalyzer
             isEnabledByDefault: true,
             description: "VB.NET のファイルの型が Namespace ステートメントで囲まれておらず、" +
                          "プロジェクト直下のファイルも含め、常に明示的な Namespace 宣言を要求します。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0002.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1001.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule, MissingNamespaceRule);
@@ -183,7 +183,7 @@ namespace VbNamespaceAnalyzer
             return $"'{implicitExpected}' と記述するか、Global を使う場合は '{explicitGlobalExpected}' と記述してください";
         }
 
-        private static (string? Name, Location Location) GetTypeNameAndLocation(SyntaxNode member)
+        private static (string Name, Location Location) GetTypeNameAndLocation(SyntaxNode member)
         {
             switch (member)
             {

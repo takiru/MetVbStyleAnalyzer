@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <!--<LangVersion>latest</LangVersion>-->
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
 
@@ -11,11 +11,22 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoWarn>NU5128</NoWarn>
 
+    <PackageId>VbStyleAnalyzer</PackageId>
+    <Authors>Takeru Yamaguchi</Authors>
+    <Description>VB.NET のコードスタイルを検証するRoslynアナライザー</Description>
+    <Copyright>Copyright ©  2026 Takeru Yamaguchi</Copyright>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
+    <FileVersion>$(VersionPrefix)</FileVersion>
+    <PackageProjectUrl>https://github.com/takiru/Metroit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/takiru/Metroit</RepositoryUrl>
+    <PackageTags>vb;style;</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>
+      smaill released.
+    </PackageReleaseNotes>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>VbNamespaceAnalyzer</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Takiru</Authors>
-    <Description>VB.NET のファイルの名前空間がフォルダー構造 + RootNamespace と一致するかを検証するRoslynアナライザー</Description>
   </PropertyGroup>
 
   <ItemGroup>

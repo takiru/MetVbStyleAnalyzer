@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VSIXProject1
+namespace VbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// If ブロックや Select Case ブロックのネストが、既定の許容階層数 (3) を超えている場合を検出するアナライザー。
@@ -14,16 +14,16 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class NestingDepthAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0004";
+        public const string DiagnosticId = "MSA1101";
 
         // 3階層までは許容し、4階層目 (これを超えた時点) で警告する (既定値。.editorconfig で上書き可能)
         private const int DefaultMaxAllowedDepth = 3;
 
         /// <summary>
         /// .editorconfig でこのキーに整数を指定すると、既定の許容階層数 (3) を上書きできる。
-        /// 例: vbns0004_max_nesting_depth = 4
+        /// 例: msa1101_max_nesting_depth = 4
         /// </summary>
-        public const string MaxDepthOptionKey = "vbns0004_max_nesting_depth";
+        public const string MaxDepthOptionKey = "msa1101_max_nesting_depth";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -34,8 +34,8 @@ namespace VbNamespaceAnalyzer
             isEnabledByDefault: true,
             description: "If ブロックや Select Case ブロックが深くネストしていると可読性が落ちるため、" +
                          "既定では4階層以上のネストを検出します。" +
-                         "許容階層数を変えるには .editorconfig で vbns0004_max_nesting_depth を指定してください。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0004.severity を設定してください。");
+                         "許容階層数を変えるには .editorconfig で msa1101_max_nesting_depth を指定してください。" +
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1101.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);

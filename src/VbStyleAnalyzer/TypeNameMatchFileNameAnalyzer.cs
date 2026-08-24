@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// ファイル内で最初に宣言されているトップレベルの
@@ -27,7 +27,7 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class TypeNameMatchFileNameAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0014";
+        public const string DiagnosticId = "MSA1110";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -41,7 +41,7 @@ namespace VbNamespaceAnalyzer
                          "ファイル名と大文字小文字を区別して一致している必要があります。" +
                          "Partial な型の場合は、ファイル名の最初の \".\" までの部分が一致していれば十分です " +
                          "(例: MyForm.Designer.vb は Partial Class MyForm と一致します)。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0014.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1110.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);

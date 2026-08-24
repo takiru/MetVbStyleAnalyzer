@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37411.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VbNamespaceAnalyzer", "VbNamespaceAnalyzer\VbNamespaceAnalyzer.csproj", "{20FCD824-70CF-4513-8CDB-7A2F5228B25A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VbStyleAnalyzer", "VbStyleAnalyzer\VbStyleAnalyzer.csproj", "{20FCD824-70CF-4513-8CDB-7A2F5228B25A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIXProject1", "VSIXProject1\VSIXProject1.csproj", "{EE584E67-868A-4314-9925-3F25620FA908}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VbStyleAnalyzer.Vsix", "VbStyleAnalyzer.Vsix\VbStyleAnalyzer.Vsix.csproj", "{EE584E67-868A-4314-9925-3F25620FA908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using VSIXProject1;
 
-namespace VSIXProject1
+namespace VbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// .editorconfig の [*.vb] セクションに、key = value 形式の行を追記・更新するための簡易ライター。

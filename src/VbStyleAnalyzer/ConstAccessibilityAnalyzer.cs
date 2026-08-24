@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// スコープが Public / Protected / Protected Friend の Const フィールドを禁止するアナライザー。
@@ -15,7 +15,7 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class ConstAccessibilityAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0012";
+        public const string DiagnosticId = "MSA1108";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -29,7 +29,7 @@ namespace VbNamespaceAnalyzer
                          "Public / Protected / Protected Friend のような公開・準公開スコープで値を変更すると、" +
                          "再コンパイルしていない呼び出し元だけ古い値のまま動作し続ける不整合が起きます。" +
                          "この用途では Shared ReadOnly を使用してください。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0012.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1108.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);

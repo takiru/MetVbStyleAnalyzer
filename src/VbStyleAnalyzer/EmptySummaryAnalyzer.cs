@@ -3,28 +3,27 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
-    /// 仮引数を持つ Method / Property において、ドキュメントコメントに
-    /// &lt;param&gt; の記載が1つも無い場合を検出するアナライザー。
-    /// 仮引数が無いメンバーは対象外。ドキュメントコメント自体が無い場合は VBNS0005 の担当。
+    /// ドキュメントコメントは存在するが、&lt;summary&gt; が無い、または中身が空の場合を検出するアナライザー。
+    /// ドキュメントコメント自体が存在しない場合は MSA1102 (MissingDocumentationCommentAnalyzer) の対象なので、
+    /// ここでは扱わない。
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
-    public class MissingParamAnalyzer : DiagnosticAnalyzer
+    public class EmptySummaryAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0007";
+        public const string DiagnosticId = "MSA1103";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
-            title: "param の記載がありません",
-            messageFormat: "'{0}' は仮引数を持ちますが、ドキュメントコメントに <param> の記載がありません",
+            title: "summary の内容が空です",
+            messageFormat: "'{0}' の <summary> が無いか、内容が空です",
             category: "Documentation",
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "仮引数を持つ Method / Property のドキュメントコメントには、" +
-                         "各仮引数に対応する <param> 要素が必要です。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0007.severity を設定してください。");
+            description: "ドキュメントコメントの <summary> 要素には、空でない説明を記述する必要があります。" +
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1103.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);
@@ -35,6 +34,7 @@ namespace VbNamespaceAnalyzer
             context.EnableConcurrentExecution();
             context.RegisterSyntaxNodeAction(
                 AnalyzeNode,
+                SyntaxKind.ClassStatement,
                 SyntaxKind.SubStatement,
                 SyntaxKind.FunctionStatement,
                 SyntaxKind.PropertyStatement);
@@ -44,22 +44,15 @@ namespace VbNamespaceAnalyzer
         {
             var node = context.Node;
 
-            var parameters = DocCommentUtilities.GetParameters(node);
-            if (parameters.IsEmpty)
-            {
-                // 仮引数が無ければ <param> は不要
-                return;
-            }
-
             var doc = DocCommentUtilities.GetDocumentationComment(node);
             if (doc is null)
             {
-                // ドキュメントコメント自体が無いケースは別のアナライザー (VBNS0005) の担当
+                // ドキュメントコメント自体が無いケースは別のアナライザー (MSA1102) の担当
                 return;
             }
 
-            var paramElements = DocCommentUtilities.GetElements(doc, "param");
-            if (!paramElements.IsEmpty)
+            var summary = DocCommentUtilities.GetElement(doc, "summary");
+            if (summary is not null && !DocCommentUtilities.IsElementContentEmpty(summary))
             {
                 return;
             }

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 
-namespace VSIXProject1
+namespace VbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// ファイルが一時的に他のプロセス (VSのライブ解析など) にロックされている場合に備えて、

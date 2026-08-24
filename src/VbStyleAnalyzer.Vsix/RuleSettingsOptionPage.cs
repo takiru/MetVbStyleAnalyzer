@@ -1,12 +1,13 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using VSIXProject1;
 
-namespace VSIXProject1
+namespace VbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// Tools &gt; Options &gt; VbNamespaceAnalyzer &gt; ルール設定 に表示される設定ページ。
@@ -15,11 +16,11 @@ namespace VSIXProject1
     /// </summary>
     public class RuleSettingsOptionPage : DialogPage
     {
-        // EmptyParamAnalyzer (VBNS0010) 側の DocCommentUtilities.ExcludedNamesOptionKey と同じ値にする必要がある
-        private const string EmptyParamExcludedNamesKey = "vbns0010_excluded_param_names";
+        // EmptyParamAnalyzer (MSA1106) 側の DocCommentUtilities.ExcludedNamesOptionKey と同じ値にする必要がある
+        private const string EmptyParamExcludedNamesKey = "msa1106_excluded_param_names";
 
-        // NestingDepthAnalyzer (VBNS0004) 側の MaxDepthOptionKey と同じ値にする必要がある
-        private const string MaxNestingDepthKey = "vbns0004_max_nesting_depth";
+        // NestingDepthAnalyzer (MSA1101) 側の MaxDepthOptionKey と同じ値にする必要がある
+        private const string MaxNestingDepthKey = "msa1101_max_nesting_depth";
 
         [Category("出力先")]
         [DisplayName("反映先")]
@@ -32,68 +33,68 @@ namespace VSIXProject1
         [Description("空の場合、現在開いているソリューションの直下にある .editorconfig を自動的に使用します (反映先が .editorconfig のときのみ有効)。")]
         public string EditorConfigPath { get; set; } = string.Empty;
 
-        [Category("VBNS0001")]
+        [Category("MSA1000")]
         [DisplayName("名前空間がフォルダー構造と一致していません")]
-        public RuleSeverityOption VBNS0001 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1000 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0002")]
+        [Category("MSA1001")]
         [DisplayName("名前空間が指定されていません")]
-        public RuleSeverityOption VBNS0002 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1001 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0003")]
-        [DisplayName("メソッド呼び出しに括弧がありません")]
-        public RuleSeverityOption VBNS0003 { get; set; } = RuleSeverityOption.Error;
+        [Category("MSA1100")]
+        [DisplayName("メソッドがプロパティのようにアクセスされています")]
+        public RuleSeverityOption MSA1100 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0004")]
+        [Category("MSA1101")]
         [DisplayName("If / Select Case のネストが深すぎます")]
-        public RuleSeverityOption VBNS0004 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1101 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0004")]
+        [Category("MSA1101")]
         [DisplayName("許容するネスト階層数")]
         [Description("If / Select Case のネストがこの数値以下であれば対象外になります。既定値は3です。")]
         [DefaultValue(3)]
         public int MaxNestingDepth { get; set; } = 3;
 
-        [Category("VBNS0005")]
+        [Category("MSA1102")]
         [DisplayName("ドキュメントコメントが指定されていません")]
-        public RuleSeverityOption VBNS0005 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1102 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0006")]
+        [Category("MSA1103")]
         [DisplayName("summary の内容が空です")]
-        public RuleSeverityOption VBNS0006 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1103 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0007")]
+        [Category("MSA1104")]
         [DisplayName("param の記載がありません")]
-        public RuleSeverityOption VBNS0007 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1104 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0008")]
+        [Category("MSA1105")]
         [DisplayName("param の name 属性が仮引数と一致していません")]
-        public RuleSeverityOption VBNS0008 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1105 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0010")]
+        [Category("MSA1106")]
         [DisplayName("param の内容が空です")]
-        public RuleSeverityOption VBNS0010 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1106 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0010")]
+        [Category("MSA1106")]
         [DisplayName("除外する引数名 (カンマ区切り)")]
-        [Description("ここに指定した引数名は、<param> の内容が空でも VBNS0010 の対象外になります。複数指定する場合はカンマで区切ってください。例: reserved,unused")]
-        public string EmptyParamExcludedNames { get; set; } = string.Empty;
+        [Description("ここに指定した引数名は、<param> の内容が空でも MSA1106 の対象外になります。複数指定する場合はカンマで区切ってください。例: sender,e")]
+        public string EmptyParamExcludedNames { get; set; } = "sender,e";
 
-        [Category("VBNS0011")]
+        [Category("MSA1107")]
         [DisplayName("returns が無いか、内容が空です")]
-        public RuleSeverityOption VBNS0011 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1107 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0012")]
+        [Category("MSA1108")]
         [DisplayName("Public/Protected/Protected Friend の定数に Const を使用しています")]
-        public RuleSeverityOption VBNS0012 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1108 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0013")]
+        [Category("MSA1109")]
         [DisplayName("Module 名が指定されていません")]
-        public RuleSeverityOption VBNS0013 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1109 { get; set; } = RuleSeverityOption.Error;
 
-        [Category("VBNS0014")]
+        [Category("MSA1110")]
         [DisplayName("型名 (Class/Structure/Interface/Module/Enum/Delegate) がファイル名と一致していません")]
-        public RuleSeverityOption VBNS0014 { get; set; } = RuleSeverityOption.Error;
+        public RuleSeverityOption MSA1110 { get; set; } = RuleSeverityOption.Error;
 
         protected override void OnApply(PageApplyEventArgs e)
         {
@@ -106,19 +107,19 @@ namespace VSIXProject1
 
             var severities = new Dictionary<string, RuleSeverityOption>
             {
-                ["VBNS0001"] = VBNS0001,
-                ["VBNS0002"] = VBNS0002,
-                ["VBNS0003"] = VBNS0003,
-                ["VBNS0004"] = VBNS0004,
-                ["VBNS0005"] = VBNS0005,
-                ["VBNS0006"] = VBNS0006,
-                ["VBNS0007"] = VBNS0007,
-                ["VBNS0008"] = VBNS0008,
-                ["VBNS0010"] = VBNS0010,
-                ["VBNS0011"] = VBNS0011,
-                ["VBNS0012"] = VBNS0012,
-                ["VBNS0013"] = VBNS0013,
-                ["VBNS0014"] = VBNS0014,
+                ["MSA1000"] = MSA1000,
+                ["MSA1001"] = MSA1001,
+                ["MSA1100"] = MSA1100,
+                ["MSA1101"] = MSA1101,
+                ["MSA1102"] = MSA1102,
+                ["MSA1103"] = MSA1103,
+                ["MSA1104"] = MSA1104,
+                ["MSA1105"] = MSA1105,
+                ["MSA1106"] = MSA1106,
+                ["MSA1107"] = MSA1107,
+                ["MSA1108"] = MSA1108,
+                ["MSA1109"] = MSA1109,
+                ["MSA1110"] = MSA1110,
             };
 
             var extraValues = new Dictionary<string, string>
@@ -143,19 +144,21 @@ namespace VSIXProject1
             }
         }
 
-        private static void TryApply(System.Action action, string description)
+        private static void TryApply(Action action, string description)
         {
             try
             {
                 action();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(
+                VsShellUtilities.ShowMessageBox(
+                    ServiceProvider.GlobalProvider,
                     $"{description}に失敗しました。ファイルが他のプロセスで使用中の可能性があります。\n\n{ex}",
                     "VbNamespaceAnalyzer ルール設定",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Warning);
+                    OLEMSGICON.OLEMSGICON_WARNING,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
         }
 
@@ -167,7 +170,7 @@ namespace VSIXProject1
             }
 
             var names = input
-                .Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => s.Trim())
                 .Where(s => s.Length > 0);
 

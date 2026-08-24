@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbNamespaceAnalyzer
+namespace VbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET の Module のメンバー (メソッド・フィールド) は、Module名を付けずに
@@ -16,7 +16,7 @@ namespace VbNamespaceAnalyzer
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class ModuleMemberQualificationAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "VBNS0013";
+        public const string DiagnosticId = "MSA1109";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -28,7 +28,7 @@ namespace VbNamespaceAnalyzer
             description: "VB.NET の Module のメンバー (メソッド・フィールド) は、Module名を付けずに参照できてしまいます。" +
                          "参照元だけを見てどの Module のメンバーかが分かりにくくなるため、" +
                          "常に Module 名を明示的に指定することを推奨します。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0013.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1109.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);
