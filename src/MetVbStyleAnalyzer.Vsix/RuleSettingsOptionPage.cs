@@ -16,6 +16,9 @@ namespace MetVbStyleAnalyzer.Vsix
     /// </summary>
     public class RuleSettingsOptionPage : DialogPage
     {
+        // NamespaceMatchFolderAnalyzer (MSA1000/MSA1001) 側の ExcludedNamespacesOptionKey と同じ値にする必要がある
+        private const string ExcludedNamespacesKey = "msa1000_excluded_namespaces";
+
         // EmptyParamAnalyzer (MSA1106) 側の DocCommentUtilities.ExcludedNamesOptionKey と同じ値にする必要がある
         private const string EmptyParamExcludedNamesKey = "msa1106_excluded_param_names";
 
@@ -39,6 +42,11 @@ namespace MetVbStyleAnalyzer.Vsix
         [Category("MSA1000")]
         [DisplayName("名前空間がフォルダー構造と一致していません")]
         public RuleSeverityOption MSA1000 { get; set; } = RuleSeverityOption.Error;
+
+        [Category("MSA1000")]
+        [DisplayName("除外する名前空間 (カンマ区切り)")]
+        [Description("ここに指定した名前空間 (プレフィックス一致。サブ名前空間も含む) は、MSA1000 / MSA1001 の両方の対象外になります。RootNamespace を含めても含めなくてもマッチします。複数指定する場合はカンマで区切ってください。例: Migrations,Generated.Code")]
+        public string ExcludedNamespaces { get; set; } = string.Empty;
 
         [Category("MSA1001")]
         [DisplayName("名前空間が指定されていません")]
@@ -133,6 +141,7 @@ namespace MetVbStyleAnalyzer.Vsix
 
             var extraValues = new Dictionary<string, string>
             {
+                [ExcludedNamespacesKey] = NormalizeNameList(ExcludedNamespaces),
                 [EmptyParamExcludedNamesKey] = NormalizeNameList(EmptyParamExcludedNames),
                 [MaxNestingDepthKey] = MaxNestingDepth > 0 ? MaxNestingDepth.ToString() : string.Empty,
                 [AllowEmptyReturnsForPropertyKey] = AllowEmptyReturnsForProperty ? "true" : "false"
@@ -144,13 +153,13 @@ namespace MetVbStyleAnalyzer.Vsix
                 if (path != null)
                 {
                     TryApply(() => EditorConfigWriter.ApplySeverities(path, severities), "severityの書き込み");
-                    TryApply(() => EditorConfigWriter.ApplyValues(path, extraValues), "追加設定 (ネスト階層数・除外引数名・Property空許容) の書き込み");
+                    TryApply(() => EditorConfigWriter.ApplyValues(path, extraValues), "追加設定 (除外名前空間・ネスト階層数・除外引数名・Property空許容) の書き込み");
                 }
             }
             else
             {
                 TryApply(() => GlobalConfigWriter.ApplySeverities(GlobalConfigWriter.DefaultGlobalConfigPath, severities), "severityの書き込み");
-                TryApply(() => GlobalConfigWriter.ApplyValues(GlobalConfigWriter.DefaultGlobalConfigPath, extraValues), "追加設定 (ネスト階層数・除外引数名・Property空許容) の書き込み");
+                TryApply(() => GlobalConfigWriter.ApplyValues(GlobalConfigWriter.DefaultGlobalConfigPath, extraValues), "追加設定 (除外名前空間・ネスト階層数・除外引数名・Property空許容) の書き込み");
             }
         }
 

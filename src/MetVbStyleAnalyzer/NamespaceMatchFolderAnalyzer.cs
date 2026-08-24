@@ -23,6 +23,20 @@ namespace MetVbStyleAnalyzer
         // VB プロジェクト特有の、コードとして扱うべきでない既定フォルダー
         private static readonly string[] ExcludedFolders = { "My Project", "obj", "bin" };
 
+        /// <summary>
+        /// .editorconfig でこのキーにカンマ区切りの名前空間を指定すると、
+        /// 該当する名前空間のファイルは MSA1000 / MSA1001 の両方の検証対象外になる。
+        /// RootNamespace を含む/含まない、どちらの書き方でもマッチする。
+        ///
+        /// ・"Migrations" (ワイルドカード無し) : "Migrations" に完全一致する名前空間のみ対象外。
+        ///   "Migrations.V1" のようなサブ名前空間は対象外にならない。
+        /// ・"Migrations.*" (末尾に ".*") : "Migrations" 自身に加えて、
+        ///   "Migrations.V1" のようなサブ名前空間も含めて対象外になる。
+        ///
+        /// 例: msa1000_excluded_namespaces = Migrations.*,Generated.Code
+        /// </summary>
+        public const string ExcludedNamespacesOptionKey = "msa1000_excluded_namespaces";
+
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
             title: "名前空間がフォルダー構造と一致していません",
@@ -33,6 +47,7 @@ namespace MetVbStyleAnalyzer
             description: "VB.NET のファイルの名前空間が、プロジェクトの RootNamespace とフォルダー階層から導かれる名前空間と一致するかを検証します。" +
                          "VB.NET は Namespace ステートメントに RootNamespace を自動的に前置するため、" +
                          "通常はフォルダー名だけを書く (Namespace Hoge) か、Global キーワードで明示的にバイパスする (Namespace Global.Root.Hoge) 必要があります。" +
+                         "特定の名前空間を対象外にするには msa1000_excluded_namespaces にカンマ区切りで指定してください。" +
                          "一致させるには、.editorconfig で dotnet_diagnostic.MSA1000.severity を設定してください。");
 
         private static readonly DiagnosticDescriptor MissingNamespaceRule = new DiagnosticDescriptor(
@@ -44,6 +59,7 @@ namespace MetVbStyleAnalyzer
             isEnabledByDefault: true,
             description: "VB.NET のファイルの型が Namespace ステートメントで囲まれておらず、" +
                          "プロジェクト直下のファイルも含め、常に明示的な Namespace 宣言を要求します。" +
+                         "特定の名前空間を対象外にするには msa1000_excluded_namespaces にカンマ区切りで指定してください。" +
                          "一致させるには、.editorconfig で dotnet_diagnostic.MSA1001.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -105,9 +121,19 @@ namespace MetVbStyleAnalyzer
             var fullPathSegments = new[] { rootNamespace }.Concat(folderSegments)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToArray();
+            var fullNamespaceWithRoot = string.Join(".", fullPathSegments);
+
+            var excludedNamespaces = GetExcludedNamespaces(options);
+            if (IsNamespaceExcluded(implicitExpected, fullNamespaceWithRoot, excludedNamespaces))
+            {
+                // 指定された名前空間 (プレフィックス) に合致するファイルは、
+                // MSA1000 / MSA1001 とも検証しない
+                return;
+            }
+
             var explicitGlobalExpected = fullPathSegments.Length == 0
                 ? "Global"
-                : "Global." + string.Join(".", fullPathSegments);
+                : "Global." + fullNamespaceWithRoot;
 
             if (string.IsNullOrEmpty(implicitExpected) && fullPathSegments.Length == 0)
             {
@@ -169,6 +195,55 @@ namespace MetVbStyleAnalyzer
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private static ImmutableHashSet<string> GetExcludedNamespaces(AnalyzerConfigOptions options)
+        {
+            if (!options.TryGetValue(ExcludedNamespacesOptionKey, out var raw) || string.IsNullOrWhiteSpace(raw))
+            {
+                return ImmutableHashSet<string>.Empty;
+            }
+
+            return raw
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .Where(s => s.Length > 0)
+                .ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+
+        private static bool IsNamespaceExcluded(string implicitExpected, string fullNamespaceWithRoot, ImmutableHashSet<string> excludedNamespaces)
+        {
+            foreach (var prefix in excludedNamespaces)
+            {
+                if (MatchesNamespacePrefix(implicitExpected, prefix) || MatchesNamespacePrefix(fullNamespaceWithRoot, prefix))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool MatchesNamespacePrefix(string ns, string pattern)
+        {
+            if (string.IsNullOrEmpty(ns))
+            {
+                return false;
+            }
+
+            // "Migrations.*" のように末尾が ".*" の場合は、
+            // "Migrations" 自身、および "Migrations.V1" のようなサブ名前空間の両方にマッチする。
+            if (pattern.EndsWith(".*", StringComparison.OrdinalIgnoreCase))
+            {
+                var basePattern = pattern.Substring(0, pattern.Length - 2);
+
+                return string.Equals(ns, basePattern, StringComparison.OrdinalIgnoreCase)
+                    || ns.StartsWith(basePattern + ".", StringComparison.OrdinalIgnoreCase);
+            }
+
+            // ワイルドカードが無い場合は完全一致のみ ("Migrations" は "Migrations" にのみマッチし、
+            // "Migrations.V1" のようなサブ名前空間にはマッチしない)
+            return string.Equals(ns, pattern, StringComparison.OrdinalIgnoreCase);
         }
 
         private static string BuildSuggestion(string implicitExpected, string explicitGlobalExpected)
