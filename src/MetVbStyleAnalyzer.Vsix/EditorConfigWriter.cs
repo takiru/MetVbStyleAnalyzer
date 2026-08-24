@@ -37,7 +37,7 @@ namespace MetVbStyleAnalyzer.Vsix
         {
             var lines = File.Exists(path)
                 ? new List<string>(File.ReadAllLines(path))
-                : new List<string> { "# VbNamespaceAnalyzer Visual Studio 拡張機能により自動更新されています" };
+                : new List<string> { "# MetVbStyleAnalyzer Visual Studio 拡張機能により自動更新されています" };
 
             var sectionStart = lines.FindIndex(l => l.Trim().Equals(SectionHeader, StringComparison.OrdinalIgnoreCase));
 

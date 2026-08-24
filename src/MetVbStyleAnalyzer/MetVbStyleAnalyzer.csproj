@@ -17,8 +17,8 @@
     <VersionPrefix>0.0.1</VersionPrefix>
     <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
     <FileVersion>$(VersionPrefix)</FileVersion>
-    <PackageProjectUrl>https://github.com/takiru/Metroit</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/takiru/Metroit</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/takiru/MetVbStyleAnalyzer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/takiru/MetVbStyleAnalyzer</RepositoryUrl>
     <PackageTags>vb;style;</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
