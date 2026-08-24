@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbStyleAnalyzer
+namespace MetVbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET のドキュメントコメント (''' で始まるXMLコメント) を解析するための共通ヘルパー。

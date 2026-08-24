@@ -3,27 +3,28 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 
-namespace VbStyleAnalyzer
+namespace MetVbStyleAnalyzer
 {
     /// <summary>
-    /// ドキュメントコメントは存在するが、&lt;summary&gt; が無い、または中身が空の場合を検出するアナライザー。
-    /// ドキュメントコメント自体が存在しない場合は MSA1102 (MissingDocumentationCommentAnalyzer) の対象なので、
-    /// ここでは扱わない。
+    /// 戻り値を持つ Function / Property において、ドキュメントコメントの &lt;returns&gt; が
+    /// 無いか、中身が空の場合を検出するアナライザー。
+    /// Sub (戻り値なし) や Class は対象外。ドキュメントコメント自体が存在しない場合は
+    /// MSA1102 (MissingDocumentationCommentAnalyzer) の対象なので、ここでは扱わない。
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
-    public class EmptySummaryAnalyzer : DiagnosticAnalyzer
+    public class EmptyReturnsAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "MSA1103";
+        public const string DiagnosticId = "MSA1107";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
-            title: "summary の内容が空です",
-            messageFormat: "'{0}' の <summary> が無いか、内容が空です",
+            title: "returns の内容が空です",
+            messageFormat: "'{0}' の <returns> が無いか、内容が空です",
             category: "Documentation",
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "ドキュメントコメントの <summary> 要素には、空でない説明を記述する必要があります。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1103.severity を設定してください。");
+            description: "戻り値を持つ Function / Property のドキュメントコメントには、空でない <returns> 要素が必要です。" +
+                         "一致させるには、.editorconfig で dotnet_diagnostic.MSA1107.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);
@@ -34,8 +35,6 @@ namespace VbStyleAnalyzer
             context.EnableConcurrentExecution();
             context.RegisterSyntaxNodeAction(
                 AnalyzeNode,
-                SyntaxKind.ClassStatement,
-                SyntaxKind.SubStatement,
                 SyntaxKind.FunctionStatement,
                 SyntaxKind.PropertyStatement);
         }
@@ -44,6 +43,11 @@ namespace VbStyleAnalyzer
         {
             var node = context.Node;
 
+            if (!DocCommentUtilities.HasReturnValue(node))
+            {
+                return;
+            }
+
             var doc = DocCommentUtilities.GetDocumentationComment(node);
             if (doc is null)
             {
@@ -51,8 +55,8 @@ namespace VbStyleAnalyzer
                 return;
             }
 
-            var summary = DocCommentUtilities.GetElement(doc, "summary");
-            if (summary != null && !DocCommentUtilities.IsElementContentEmpty(summary))
+            var returns = DocCommentUtilities.GetElement(doc, "returns");
+            if (returns != null && !DocCommentUtilities.IsElementContentEmpty(returns))
             {
                 return;
             }

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbStyleAnalyzer
+namespace MetVbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET では引数なしのメソッド呼び出しで括弧を省略できてしまうため、

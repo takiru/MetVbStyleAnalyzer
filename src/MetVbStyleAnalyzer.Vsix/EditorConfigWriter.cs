@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace VbStyleAnalyzer.Vsix
+namespace MetVbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// .editorconfig の [*.vb] セクションに、key = value 形式の行を追記・更新するための簡易ライター。

@@ -13,8 +13,8 @@
     <ProjectGuid>{EE584E67-868A-4314-9925-3F25620FA908}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VbStyleAnalyzer.Vsix</RootNamespace>
-    <AssemblyName>VbStyleAnalyzer</AssemblyName>
+    <RootNamespace>MetVbStyleAnalyzer.Vsix</RootNamespace>
+    <AssemblyName>MetVbStyleAnalyzer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
@@ -53,7 +53,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="RuleSeverityOption.cs" />
-    <Compile Include="VSIXProject1Package.cs" />
+    <Compile Include="Package.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">

@@ -1,4 +1,4 @@
-﻿namespace VbStyleAnalyzer.Vsix
+﻿namespace MetVbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// ルールごとに選択できる重要度。.editorconfig / .globalconfig の severity 値に対応する。

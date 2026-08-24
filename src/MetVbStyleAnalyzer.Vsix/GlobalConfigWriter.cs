@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace VbStyleAnalyzer.Vsix
+namespace MetVbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// VB.NET プロジェクトが .editorconfig で severity 等を指定していない場合に適用される、
@@ -16,15 +16,15 @@ namespace VbStyleAnalyzer.Vsix
     {
         public static readonly string DefaultGlobalConfigPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "VbNamespaceAnalyzer",
-            "VbNamespaceAnalyzer.globalconfig");
+            "MetVbStyleAnalyzer",
+            "MetVbStyleAnalyzer.globalconfig");
 
         private static readonly string[] HeaderLines =
         {
             "is_global = true",
             "global_level = -100",
             string.Empty,
-            "# VbNamespaceAnalyzer Visual Studio 拡張機能により自動生成されています",
+            "# MetVbStyleAnalyzer Visual Studio 拡張機能により自動生成されています",
             "# 各プロジェクトの .editorconfig で同じキーが指定されている場合は、そちらが優先されます",
             string.Empty
         };

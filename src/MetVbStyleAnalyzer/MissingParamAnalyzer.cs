@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 
-namespace VbStyleAnalyzer
+namespace MetVbStyleAnalyzer
 {
     /// <summary>
     /// 仮引数を持つ Method / Property において、ドキュメントコメントに

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VbStyleAnalyzer.Vsix
+namespace MetVbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -25,10 +25,10 @@ namespace VbStyleAnalyzer.Vsix
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]
-    [ProvideOptionPage(typeof(RuleSettingsOptionPage), "VbNamespaceAnalyzer", "ルール設定", 0, 0, true)]
+    [ProvideOptionPage(typeof(RuleSettingsOptionPage), "MetVbStyleAnalyzer", "ルール設定", 0, 0, true)]
     [ProvideAutoLoad(Microsoft.VisualStudio.Shell.Interop.UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    public sealed class VSIXProject1Package : AsyncPackage
+    public sealed class Package : AsyncPackage
     {
         /// <summary>
         /// VSIXProject1Package GUID string.

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace VbStyleAnalyzer
+namespace MetVbStyleAnalyzer
 {
     /// <summary>
     /// VB.NET の Module のメンバー (メソッド・フィールド) は、Module名を付けずに

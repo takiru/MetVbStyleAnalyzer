@@ -10,7 +10,7 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoWarn>NU5128</NoWarn>
 
-    <PackageId>VbStyleAnalyzer</PackageId>
+    <PackageId>MetVbStyleAnalyzer</PackageId>
     <Authors>Takeru Yamaguchi</Authors>
     <Description>VB.NET のコードスタイルを検証するRoslynアナライザー</Description>
     <Copyright>Copyright ©  2026 Takeru Yamaguchi</Copyright>

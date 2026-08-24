@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
-namespace VbStyleAnalyzer.Vsix
+namespace MetVbStyleAnalyzer.Vsix
 {
     /// <summary>
     /// Tools &gt; Options &gt; VbNamespaceAnalyzer &gt; ルール設定 に表示される設定ページ。
@@ -155,7 +155,7 @@ namespace VbStyleAnalyzer.Vsix
                 VsShellUtilities.ShowMessageBox(
                     ServiceProvider.GlobalProvider,
                     $"{description}に失敗しました。ファイルが他のプロセスで使用中の可能性があります。\n\n{ex}",
-                    "VbNamespaceAnalyzer ルール設定",
+                    "MetVbStyleAnalyzer ルール設定",
                     OLEMSGICON.OLEMSGICON_WARNING,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
