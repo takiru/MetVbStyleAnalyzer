@@ -251,7 +251,21 @@ namespace MetVbStyleAnalyzer
                 current = nsBlock.Parent;
             }
 
-            return string.Join(".", names);
+            // "[Shared].ValueObjects" のように、VBの予約語を識別子として使うための
+            // 角括弧エスケープ ([Shared] 等) が含まれる場合があるため、比較の前に取り除く。
+            // (期待値側であるフォルダー名/RootNamespaceには角括弧が付かないため、
+            //  実際の宣言側だけを正規化すればよい)
+            return RemoveIdentifierBrackets(string.Join(".", names));
+        }
+
+        private static string RemoveIdentifierBrackets(string name)
+        {
+            if (name.IndexOf('[') < 0 && name.IndexOf(']') < 0)
+            {
+                return name;
+            }
+
+            return name.Replace("[", string.Empty).Replace("]", string.Empty);
         }
 
         private static string GetRelativeDirectory(string projectDir, string filePath)

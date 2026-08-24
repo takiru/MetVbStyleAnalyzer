@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic;
@@ -11,6 +12,8 @@ namespace MetVbStyleAnalyzer
     /// 「Dim value = Me.Fuga」のように、実際には Function/Sub であるメンバーを
     /// プロパティのように括弧なしで参照しているコードを検出するアナライザー。
     /// AddressOf によるデリゲート参照や NameOf は意図的な参照として対象外にする。
+    /// Implements / Handles 句のメンバー参照は、式ではなく宣言の一部 (QualifiedNameSyntax) として
+    /// 解析され、呼び出しの概念自体が存在しないため対象外にする。
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class MethodInvocationParenthesesAnalyzer : DiagnosticAnalyzer
@@ -26,7 +29,7 @@ namespace MetVbStyleAnalyzer
             isEnabledByDefault: true,
             description: "VB.NET は引数なしのメソッド呼び出しで括弧を省略できてしまうため、" +
                          "誤ってメソッドをプロパティのように扱っていても気づきにくくなります。" +
-                         "AddressOf によるデリゲート参照や NameOf は対象外です。" +
+                         "AddressOf によるデリゲート参照や NameOf、Implements / Handles 句は対象外です。" +
                          "一致させるには、.editorconfig で dotnet_diagnostic.MSA1100.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -65,6 +68,13 @@ namespace MetVbStyleAnalyzer
                 return;
             }
 
+            // "Implements IFoo.Bar" / "Handles Control.Event" のメンバー参照は、
+            // 式 (呼び出し) ではなく宣言の一部 (QualifiedNameSyntax) として解析されるため対象外
+            if (IsWithinImplementsOrHandlesClause(node))
+            {
+                return;
+            }
+
             // "Me.Fuga" の ".Fuga" 部分 (IdentifierNameSyntax) は、
             // 親の MemberAccessExpressionSyntax ("Me.Fuga" 全体) 側で判定するため、
             // 二重報告を避けてここではスキップする
@@ -87,6 +97,11 @@ namespace MetVbStyleAnalyzer
                 methodSymbol.Name);
 
             context.ReportDiagnostic(diagnostic);
+        }
+
+        private static bool IsWithinImplementsOrHandlesClause(SyntaxNode node)
+        {
+            return node.Ancestors().Any(a => a is ImplementsClauseSyntax || a is HandlesClauseSyntax);
         }
     }
 }

@@ -17,4 +17,4 @@ dotnet_diagnostic.MSA1109.severity = error     // Module 名が指定されて�
 dotnet_diagnostic.MSA1110.severity = error     // 型名 (Class/Structure/Interface/Module/Enum/Delegate) がファイル名と一致していません  
 msa1106_excluded_param_names = sender,e        // 除外する引数名 (カンマ区切り)  
 msa1101_max_nesting_depth = 3                  // 許容するネスト階層数  
-
+msa1107_allow_empty_for_property = true        // プロパティは<returns>が空でも許容する

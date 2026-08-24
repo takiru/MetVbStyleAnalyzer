@@ -14,7 +14,7 @@
     <Authors>Takeru Yamaguchi</Authors>
     <Description>VB.NET のコードスタイルを検証するRoslynアナライザー</Description>
     <Copyright>Copyright ©  2026 Takeru Yamaguchi</Copyright>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix>0.0.2</VersionPrefix>
     <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
     <FileVersion>$(VersionPrefix)</FileVersion>
     <PackageProjectUrl>https://github.com/takiru/MetVbStyleAnalyzer</PackageProjectUrl>
