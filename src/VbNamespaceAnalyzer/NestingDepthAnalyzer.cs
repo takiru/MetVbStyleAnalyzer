@@ -16,8 +16,14 @@ namespace VbNamespaceAnalyzer
     {
         public const string DiagnosticId = "VBNS0004";
 
-        // 3階層までは許容し、4階層目 (これを超えた時点) で警告する
-        private const int MaxAllowedDepth = 3;
+        // 3階層までは許容し、4階層目 (これを超えた時点) で警告する (既定値。.editorconfig で上書き可能)
+        private const int DefaultMaxAllowedDepth = 3;
+
+        /// <summary>
+        /// .editorconfig でこのキーに整数を指定すると、既定の許容階層数 (3) を上書きできる。
+        /// 例: vbns0004_max_nesting_depth = 4
+        /// </summary>
+        public const string MaxDepthOptionKey = "vbns0004_max_nesting_depth";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
@@ -28,6 +34,7 @@ namespace VbNamespaceAnalyzer
             isEnabledByDefault: true,
             description: "If ブロックや Select Case ブロックが深くネストしていると可読性が落ちるため、" +
                          "既定では4階層以上のネストを検出します。" +
+                         "許容階層数を変えるには .editorconfig で vbns0004_max_nesting_depth を指定してください。" +
                          "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0004.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -88,7 +95,9 @@ namespace VbNamespaceAnalyzer
                 current = current.Parent;
             }
 
-            if (depth <= MaxAllowedDepth)
+            var maxAllowedDepth = GetMaxAllowedDepth(context);
+
+            if (depth <= maxAllowedDepth)
             {
                 return;
             }
@@ -101,8 +110,22 @@ namespace VbNamespaceAnalyzer
                 _ => node.GetLocation()
             };
 
-            var diagnostic = Diagnostic.Create(Rule, location, depth, MaxAllowedDepth);
+            var diagnostic = Diagnostic.Create(Rule, location, depth, maxAllowedDepth);
             context.ReportDiagnostic(diagnostic);
+        }
+
+        private static int GetMaxAllowedDepth(SyntaxNodeAnalysisContext context)
+        {
+            var options = context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Node.SyntaxTree);
+
+            if (options.TryGetValue(MaxDepthOptionKey, out var raw)
+                && int.TryParse(raw, out var configured)
+                && configured > 0)
+            {
+                return configured;
+            }
+
+            return DefaultMaxAllowedDepth;
         }
     }
 }

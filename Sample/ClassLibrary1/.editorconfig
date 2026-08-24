@@ -1,20 +1,6 @@
 # 上位ディレクトリから .editorconfig 設定を継承する場合は、以下の行を削除します
 root = true
 
-[*.vb]
-dotnet_diagnostic.VBNS0001.severity = error
-dotnet_diagnostic.VBNS0002.severity = error
-dotnet_diagnostic.VBNS0003.severity = error
-dotnet_diagnostic.VBNS0004.severity = error
-dotnet_diagnostic.VBNS0005.severity = error
-dotnet_diagnostic.VBNS0006.severity = error
-dotnet_diagnostic.VBNS0007.severity = error
-dotnet_diagnostic.VBNS0008.severity = error
-dotnet_diagnostic.VBNS0009.severity = error
-dotnet_diagnostic.VBNS0010.severity = error
-dotnet_diagnostic.VBNS0011.severity = error
-
-# C# ファイル
 [*.cs]
 
 #### コア EditorConfig オプション ####
@@ -280,3 +266,20 @@ csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
+
+[*.vb]
+dotnet_diagnostic.VBNS0001.severity = error
+dotnet_diagnostic.VBNS0002.severity = error
+dotnet_diagnostic.VBNS0003.severity = error
+dotnet_diagnostic.VBNS0004.severity = error
+dotnet_diagnostic.VBNS0005.severity = error
+dotnet_diagnostic.VBNS0006.severity = error
+dotnet_diagnostic.VBNS0007.severity = error
+dotnet_diagnostic.VBNS0008.severity = error
+dotnet_diagnostic.VBNS0010.severity = error
+dotnet_diagnostic.VBNS0011.severity = error
+dotnet_diagnostic.VBNS0012.severity = error
+dotnet_diagnostic.VBNS0013.severity = error
+dotnet_diagnostic.VBNS0014.severity = error
+vbns0010_excluded_param_names = sender,e
+vbns0004_max_nesting_depth = 4

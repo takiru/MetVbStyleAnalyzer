@@ -16,6 +16,13 @@ namespace VbNamespaceAnalyzer
     {
         public const string DiagnosticId = "VBNS0010";
 
+        /// <summary>
+        /// .editorconfig でこのキーにカンマ区切りの引数名を指定すると、
+        /// それらの引数の <param> は内容が空でも対象外になる。
+        /// 例: vbns0010_excluded_param_names = reserved,unused
+        /// </summary>
+        public const string ExcludedNamesOptionKey = "vbns0010_excluded_param_names";
+
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
             title: "param の内容が空です",
@@ -24,7 +31,8 @@ namespace VbNamespaceAnalyzer
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "ドキュメントコメントの <param> 要素には、空でない説明を記述する必要があります。" +
-                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0010.severity を設定してください。");
+                         "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0010.severity を設定してください。" +
+                         "特定の引数名を対象外にするには vbns0010_excluded_param_names にカンマ区切りで指定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(Rule);
@@ -51,6 +59,9 @@ namespace VbNamespaceAnalyzer
                 return;
             }
 
+            var options = context.Options.AnalyzerConfigOptionsProvider.GetOptions(node.SyntaxTree);
+            var excludedNames = DocCommentUtilities.GetExcludedNames(options, ExcludedNamesOptionKey);
+
             var paramElements = DocCommentUtilities.GetElements(doc, "param");
 
             foreach (var paramElement in paramElements)
@@ -60,8 +71,15 @@ namespace VbNamespaceAnalyzer
                     continue;
                 }
 
-                var declaredName = DocCommentUtilities.GetNameAttributeValue(paramElement) ?? "?";
-                context.ReportDiagnostic(Diagnostic.Create(Rule, paramElement.GetLocation(), declaredName));
+                var declaredName = DocCommentUtilities.GetNameAttributeValue(paramElement);
+
+                if (declaredName is not null && excludedNames.Contains(declaredName))
+                {
+                    // 除外リストに含まれる引数名は、内容が空でも対象外にする
+                    continue;
+                }
+
+                context.ReportDiagnostic(Diagnostic.Create(Rule, paramElement.GetLocation(), declaredName ?? "?"));
             }
         }
     }

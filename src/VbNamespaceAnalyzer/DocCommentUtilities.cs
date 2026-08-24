@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace VbNamespaceAnalyzer
@@ -102,6 +103,25 @@ namespace VbNamespaceAnalyzer
             }
 
             return element.GetLocation();
+        }
+
+        /// <summary>
+        /// .editorconfig のカスタムキー (カンマ区切りの引数名リスト) を読み取り、
+        /// 除外対象の引数名の集合を返す。キーが無い場合は空集合。
+        /// 例: vbns0010_excluded_param_names = reserved,unused
+        /// </summary>
+        public static ImmutableHashSet<string> GetExcludedNames(AnalyzerConfigOptions options, string key)
+        {
+            if (!options.TryGetValue(key, out var raw) || string.IsNullOrWhiteSpace(raw))
+            {
+                return ImmutableHashSet<string>.Empty;
+            }
+
+            return raw
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .Where(s => s.Length > 0)
+                .ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

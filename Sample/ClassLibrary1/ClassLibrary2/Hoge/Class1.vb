@@ -1,7 +1,9 @@
 Imports System.IO
 
 Namespace Hoge
-
+    ''' <summary>
+    ''' aaa
+    ''' </summary>
     Public Class Class1
         ''' <summary>
         ''' aaa
@@ -19,6 +21,15 @@ Namespace Hoge
         Public Function Fuga() As String
             Return "Fuga"
         End Function
+
+        ''' <summary>
+        ''' aa
+        ''' </summary>
+        ''' <param name="sender"></param>
+        ''' <param name="e"></param>
+        Public Sub Test(sender As Object, e As EventArgs)
+
+        End Sub
 
         ''' <summary>
         ''' aaa

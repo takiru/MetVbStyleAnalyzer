@@ -6,9 +6,10 @@ using Microsoft.CodeAnalysis.VisualBasic;
 namespace VbNamespaceAnalyzer
 {
     /// <summary>
-    /// ドキュメントコメントに &lt;returns&gt; の記載はあるが、中身が空 (または空白のみ) の場合を検出するアナライザー。
-    /// &lt;returns&gt; が1つも無いケースは VBNS0009 (MissingReturnsAnalyzer) の担当なので、
-    /// ここでは「中身の空チェック」のみを扱う。
+    /// 戻り値を持つ Function / Property において、ドキュメントコメントの &lt;returns&gt; が
+    /// 無いか、中身が空の場合を検出するアナライザー。
+    /// Sub (戻り値なし) や Class は対象外。ドキュメントコメント自体が存在しない場合は
+    /// VBNS0005 (MissingDocumentationCommentAnalyzer) の対象なので、ここでは扱わない。
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.VisualBasic)]
     public class EmptyReturnsAnalyzer : DiagnosticAnalyzer
@@ -18,12 +19,11 @@ namespace VbNamespaceAnalyzer
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
             title: "returns の内容が空です",
-            messageFormat: "'{0}' の <returns> の内容が空です",
+            messageFormat: "'{0}' の <returns> が無いか、内容が空です",
             category: "Documentation",
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "戻り値を持つ Function / Property のドキュメントコメントの <returns> 要素には、" +
-                         "空でない説明を記述する必要があります。" +
+            description: "戻り値を持つ Function / Property のドキュメントコメントには、空でない <returns> 要素が必要です。" +
                          "一致させるには、.editorconfig で dotnet_diagnostic.VBNS0011.severity を設定してください。");
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -55,22 +55,14 @@ namespace VbNamespaceAnalyzer
                 return;
             }
 
-            var returnsElements = DocCommentUtilities.GetElements(doc, "returns");
-            if (returnsElements.IsEmpty)
+            var returns = DocCommentUtilities.GetElement(doc, "returns");
+            if (returns is not null && !DocCommentUtilities.IsElementContentEmpty(returns))
             {
-                // <returns> が1つも無いケースは別のアナライザー (VBNS0009) の担当
                 return;
             }
 
             var (name, location) = DocCommentUtilities.GetMemberNameAndLocation(node);
-
-            foreach (var returnsElement in returnsElements)
-            {
-                if (DocCommentUtilities.IsElementContentEmpty(returnsElement))
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(Rule, returnsElement.GetLocation(), name));
-                }
-            }
+            context.ReportDiagnostic(Diagnostic.Create(Rule, location, name));
         }
     }
 }
